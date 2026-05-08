@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # إعدادات الصفحة
-st.set_page_config(page_title="Network Monitor", page_icon="🌐", layout="wide")
+st.set_page_config(page_title="Network Monitor Pro", page_icon="🌐", layout="wide")
 
 # تصميم CSS احترافي (ألوان مريحة وأزرار ضخمة)
 st.markdown("""
@@ -69,34 +69,4 @@ elif st.session_state.page == 'devices':
     st.markdown("<h1 style='text-align: center; color: white;'>📱 قائمة الأجهزة الحالية</h1>", unsafe_allow_html=True)
     
     devices_data = pd.DataFrame({
-        "اسم الجهاز (المعروف)": ["كمبيوتر عبد الله الشخصي", "جهاز لوحي (Xiaomi)", "جوال سامسونج الترا", "جهاز بلايستيشن / إكس بوكس"],
-        "رقم الجهاز (IP)": ["192.168.1.10", "192.168.1.15", "192.168.1.22", "192.168.1.50"],
-        "حالة الاتصال": ["متصل الآن ✅", "متصل ✅", "غير نشط 💤", "متصل ✅"]
-    })
-    
-    st.table(devices_data)
-    if st.button("🔙 العودة للقائمة الرئيسية"):
-        go_to('main')
-
-# --- واجهة استخدام الشبكة ---
-elif st.session_state.page == 'usage':
-    st.markdown("<h1 style='text-align: center; color: white;'>📊 نشاط واستخدام الأجهزة</h1>", unsafe_allow_html=True)
-    
-    usage_data = pd.DataFrame({
-        "اسم الجهاز": ["كمبيوتر عبد الله الشخصي", "جهاز لوحي (Xiaomi)", "جوال سامسونج الترا", "جهاز بلايستيشن / إكس بوكس"],
-        "الموقع المفتوح الآن": ["تطوير البرامج (GitHub)", "بحث جوجل", "تطبيق اليوتيوب", "تحميل ألعاب"],
-        "كمية الاستهلاك": ["متوسط", "خفيف", "عالي", "عالي جداً"],
-        "النشاط": ["يعمل الآن", "يعمل الآن", "خامل", "يعمل الآن"]
-    })
-    
-    st.table(usage_data)
-    
-    if st.button("🔙 العودة للقائمة الرئيسية"):
-        go_to('main')
-
-# --- الحقوق الثابتة ---
-st.markdown("""
-    <div class="footer">
-        هذا التطبيق مصمم من أخوك عبد الله
-    </div>
-    """, unsafe_allow_html=True)
+        "اسم الجهاز
