@@ -1,107 +1,102 @@
 import streamlit as st
 import pandas as pd
-import socket
 
 # إعدادات الصفحة
-st.set_page_config(page_title="Abdullah Network Pro", page_icon="🛡️", layout="wide")
+st.set_page_config(page_title="Network Monitor", page_icon="🌐", layout="wide")
 
-# تصميم CSS احترافي (أسود ونيون أزرق)
+# تصميم CSS احترافي (ألوان مريحة وأزرار ضخمة)
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0e14; }
+    .stApp { background-color: #0e1117; }
     
     /* تصميم الأزرار العملاقة */
     div.stButton > button {
         width: 100%;
-        height: 200px;
-        border-radius: 30px;
-        font-size: 30px !important;
+        height: 220px;
+        border-radius: 25px;
+        font-size: 32px !important;
         font-weight: bold;
-        background: linear-gradient(145deg, #161b22, #0d1117);
-        color: #00d4ff;
-        border: 2px solid #00d4ff;
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
-        transition: 0.4s ease;
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        color: #38bdf8;
+        border: 3px solid #38bdf8;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        transition: 0.3s;
     }
     
     div.stButton > button:hover {
-        background: #00d4ff;
-        color: #0b0e14;
-        box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
-        transform: translateY(-5px);
+        background: #38bdf8;
+        color: #0f172a;
+        transform: scale(1.02);
     }
 
-    .title-text { text-align: center; color: #ffffff; font-size: 42px; font-weight: 900; }
-    .sub-text { text-align: center; color: #00d4ff; font-size: 20px; margin-bottom: 50px; }
+    .main-title { text-align: center; color: white; font-size: 45px; font-weight: bold; margin-top: -30px; }
+    .sub-title { text-align: center; color: #94a3b8; font-size: 22px; margin-bottom: 50px; }
 
-    /* الحقوق أسفل الصفحة */
+    /* الحقوق */
     .footer {
         position: fixed;
         left: 0; bottom: 0; width: 100%;
-        background-color: #0d1117; color: #00d4ff;
+        background-color: #0f172a; color: #38bdf8;
         text-align: center; padding: 15px;
-        font-weight: bold; border-top: 2px solid #00d4ff;
+        font-weight: bold; border-top: 1px solid #38bdf8;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# إدارة التنقل بين الصفحات
+# إدارة الصفحات
 if 'page' not in st.session_state:
     st.session_state.page = 'main'
 
-def navigate(page_name):
+def go_to(page_name):
     st.session_state.page = page_name
     st.rerun()
 
-# --- القائمة الرئيسية ---
+# --- الواجهة الرئيسية ---
 if st.session_state.page == 'main':
-    st.markdown("<h1 class='title-text'>🛡️ أهلاً بك في النظام الشامل لمعرفة أجهزة الشبكة</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-text'>نظام المراقبة اللحظية للأجهزة والنشاط</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-title'>اهلا بك في النظام الشامل لمعرفة الاجهزة على الشبكة</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-title'>اختر أحد الأقسام التالية لمتابعة نشاط شبكتك</p>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("💻 قائمة أجهزة عبد الله"): navigate('devices')
+        if st.button("📱 أسماء الأجهزة المتصلة"):
+            go_to('devices')
     with col2:
-        if st.button("🌐 مراقبة النشاط اللحظي"): navigate('activity')
+        if st.button("📊 مراقبة استخدام الشبكة"):
+            go_to('usage')
 
-# --- واجهة الأجهزة (الأسماء الحقيقية) ---
+# --- واجهة أسماء الأجهزة ---
 elif st.session_state.page == 'devices':
-    st.title("💻 قائمة الأجهزة المكتشفة")
+    st.markdown("<h1 style='text-align: center; color: white;'>📱 قائمة الأجهزة الحالية</h1>", unsafe_allow_html=True)
     
-    # بيانات حقيقية بناءً على أجهزتك
-    devices_df = pd.DataFrame({
-        "اسم الجهاز الحقيقي": ["PC-Abdullah-RTX4060Ti", "Xiaomi-Pad-7-Abdullah", "Samsung-S24-Ultra", "Xbox-Main-Console"],
-        "الآي بي (IP Address)": ["192.168.1.10", "192.168.1.15", "192.168.1.22", "192.168.1.50"],
-        "الحالة": ["نشط الآن ✅", "نشط ✅", "خامل 💤", "نشط ✅"]
+    devices_data = pd.DataFrame({
+        "اسم الجهاز (المعروف)": ["كمبيوتر عبد الله الشخصي", "جهاز لوحي (Xiaomi)", "جوال سامسونج الترا", "جهاز بلايستيشن / إكس بوكس"],
+        "رقم الجهاز (IP)": ["192.168.1.10", "192.168.1.15", "192.168.1.22", "192.168.1.50"],
+        "حالة الاتصال": ["متصل الآن ✅", "متصل ✅", "غير نشط 💤", "متصل ✅"]
     })
     
-    st.table(devices_df)
-    if st.button("🔙 العودة للرئيسية"): navigate('main')
+    st.table(devices_data)
+    if st.button("🔙 العودة للقائمة الرئيسية"):
+        go_to('main')
 
-# --- واجهة النشاط اللحظي ---
-elif st.session_state.page == 'activity':
-    st.title("🌐 مراقبة النشاط والمواقع")
-    st.write("تحليل الاستخدام الحالي لكل جهاز مربوط بالشبكة:")
+# --- واجهة استخدام الشبكة ---
+elif st.session_state.page == 'usage':
+    st.markdown("<h1 style='text-align: center; color: white;'>📊 نشاط واستخدام الأجهزة</h1>", unsafe_allow_html=True)
     
-    activity_df = pd.DataFrame({
-        "الجهاز": ["PC-Abdullah-RTX4060Ti", "Xiaomi-Pad-7-Abdullah", "Samsung-S24-Ultra", "Xbox-Main-Console"],
-        "النشاط الحالي (الموقع)": ["Streamlit Dashboard", "Google Search", "YouTube App", "Game Update Server"],
-        "حجم البيانات": ["120 MB", "15 MB", "1.2 GB", "3.5 GB"],
-        "التوقيت": ["الآن", "منذ 2 دقيقة", "منذ 10 دقائق", "منذ ساعة"]
+    usage_data = pd.DataFrame({
+        "اسم الجهاز": ["كمبيوتر عبد الله الشخصي", "جهاز لوحي (Xiaomi)", "جوال سامسونج الترا", "جهاز بلايستيشن / إكس بوكس"],
+        "الموقع المفتوح الآن": ["تطوير البرامج (GitHub)", "بحث جوجل", "تطبيق اليوتيوب", "تحميل ألعاب"],
+        "كمية الاستهلاك": ["متوسط", "خفيف", "عالي", "عالي جداً"],
+        "النشاط": ["يعمل الآن", "يعمل الآن", "خامل", "يعمل الآن"]
     })
     
-    st.table(activity_df)
+    st.table(usage_data)
     
-    # إحصائية بسيطة
-    st.write("---")
-    st.subheader("📊 ملخص استهلاك البيانات اليوم")
-    st.bar_chart(activity_df.set_index("الجهاز")["حجم البيانات"].str.replace(' GB', '').str.replace(' MB', ''))
-    
-    if st.button("🔙 العودة للرئيسية"): navigate('main')
+    if st.button("🔙 العودة للقائمة الرئيسية"):
+        go_to('main')
 
-# --- تذييل الصفحة (الحقوق) ---
+# --- الحقوق الثابتة ---
 st.markdown("""
     <div class="footer">
-        هذا التطبيق مصمم بواسطة أخوك عبد الله ✍️ | جميع الحقوق محفوظة 2026
+        هذا التطبيق مصمم من أخوك عبد الله
     </div>
     """, unsafe_allow_html=True)
