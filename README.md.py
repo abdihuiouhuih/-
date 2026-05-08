@@ -1,37 +1,68 @@
 import streamlit as st
-from scapy.all import ARP, Ether, srp
-import socket
+import subprocess
+import platform
+import re
 import pandas as pd
-import time
+import socket
 
 st.set_page_config(
-    page_title="لوحة مراقبة الشبكة",
+    page_title="Network Scanner",
     page_icon="📡",
     layout="wide"
 )
 
-st.title("📡 لوحة مراقبة الشبكة")
-st.caption("عرض الأجهزة المتصلة على شبكتك المحلية")
+st.title("📡 مراقبة الأجهزة المتصلة بالشبكة")
+st.caption("يفحص الأجهزة المتصلة بنفس الشبكة المحلية")
 
 
-# =========================
-# إعدادات الشبكة
-# =========================
-NETWORK = "192.168.1.1/24"
-
-
-# =========================
-# فحص الشبكة
-# =========================
-def scan_network():
+def get_devices():
     devices = []
 
-    arp = ARP(pdst=NETWORK)
-    ether = Ether(dst="ff:ff:ff:ff:ff:ff")
-    packet = ether / arp
+    try:
+        system = platform.system()
 
-    result = srp(packet, timeout=3, verbose=0)[0]
+        if system == "Windows":
+            output = subprocess.check_output(
+                "arp -a",
+                shell=True
+            ).decode(errors="ignore")
+        else:
+            output = subprocess.check_output(
+                ["arp", "-a"]
+            ).decode(errors="ignore")
 
-    for _, received in result:
-        ip = received.psrc
-st.rerun()# -
+        pattern = r"([0-9]+(?:\.[0-9]+){3})"
+        ips = re.findall(pattern, output)
+
+        unique_ips = list(set(ips))
+
+        for ip in unique_ips:
+            try:
+                hostname = socket.gethostbyaddr(ip)[0]
+            except Exception:
+                hostname = "غير معروف"
+
+            devices.append({
+                "اسم الجهاز": hostname,
+                "IP": ip,
+                "الحالة": "متصل"
+            })
+
+    except Exception as error:
+        st.error(f"خطأ أثناء الفحص: {error}")
+
+    return devices
+
+
+if "known_ips" not in st.session_state:
+    st.session_state.known_ips = []
+
+
+if st.button("🔍 فحص الشبكة"):
+    with st.spinner("جاري الفحص..."):
+
+        devices = get_devices()
+
+        current_ips = [d["IP"] for d in devices]
+
+    "لا يمكن استخراج كلمات السر أو مراقبة المواقع أو التجسس على المستخدمين"
